@@ -15,17 +15,17 @@ class Pet:
             self.happiness = 100
 
 def main():
-    name = input("What would you like to name your pet? ")
+    name = input("Wie willst du deinen Hund nennen? ")
     pet = Pet(name)
     while True:
-        print(f"\n{pet.name}'s Hunger: {pet.hunger}, Happiness: {pet.happiness}")
-        action = input("What would you like to do? (feed, play, quit): ")
-        if action == 'feed':
+        print(f"\n{pet.name}'s Hunger: {pet.hunger}, Stimmung: {pet.happiness}")
+        action = input("Was möchtest du machen? (füttern, spielen, beenden): ")
+        if action == 'füttern':
             pet.feed()
-        elif action == 'play':
+        elif action == 'spielen':
             pet.play()
-        elif action == 'quit':
+        elif action == 'beenden':
             break
         else:
-            print("Invalid action.")
+            print("ungültge Aktion.")
 main()
