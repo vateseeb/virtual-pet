@@ -49,7 +49,7 @@ class Dog(Pet):
 
 def increase_hunger_over_time(pet):
     while True:
-        time.sleep(5)  # wait for 60 seconds
+        time.sleep(60)  # wait for 60 seconds
         pet.set_hunger(pet.hunger + 10)
         
 def main():
