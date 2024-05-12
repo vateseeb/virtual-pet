@@ -1,28 +1,39 @@
 import os
 import json
+import threading
+import time
 
 class Pet:
     def __init__(self, name, hunger, happiness):
         self.name = name
-        self.hunger = hunger
-        self.happiness = happiness
+        self.set_hunger(hunger)
+        self.set_happiness(happiness)
 
     def feed(self):
         self.set_hunger(self.hunger - 10)
 
     def play(self):
-        self.happiness = self.happiness + 10 
+        self.set_happiness(self.happiness + 10)
         self.set_hunger(self.hunger + 10)
-        if self.happiness > 100:
-            self.happiness = 100
 
     def set_hunger(self, hunger):
         self.hunger = hunger
         if self.hunger >= 100:
             self.happiness -= 20
+            print(f"{self.name} ist sehr hungrig!")
         if self.hunger < 0:
             self.hunger = 0
             self.happiness -= 20
+        if self.hunger >= 150:
+            print("GAME OVER!")
+            exit()
+
+    def set_happiness(self, happiness):
+        self.happiness = happiness
+        if self.happiness > 100:
+            self.happiness = 100
+        if self.happiness < 0:
+            self.happiness = 0
 
 class Dog(Pet):
     def __init__(self, name, hunger, happiness):
@@ -36,6 +47,11 @@ class Dog(Pet):
         super().play()
         print("Woof! Woof!")
 
+def increase_hunger_over_time(pet):
+    while True:
+        time.sleep(5)  # wait for 60 seconds
+        pet.set_hunger(pet.hunger + 10)
+        
 def main():
     name_file = "dog_name.txt"
     state_file = "dog_state.json"
@@ -55,6 +71,9 @@ def main():
         state = {"hunger": 50, "happiness": 50}
 
     dog = Dog(name, state["hunger"], state["happiness"])  
+
+     # Start a new thread that will increase the dog's hunger over time
+    threading.Thread(target=increase_hunger_over_time, args=(dog,), daemon=True).start()
     
     while True:
         print(f"\n{dog.name}'s Hunger: {dog.hunger}, Fröhlichkeit: {dog.happiness}")
