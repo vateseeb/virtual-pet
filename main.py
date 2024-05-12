@@ -1,8 +1,11 @@
+import os
+import json
+
 class Pet:
-    def __init__(self, name):
+    def __init__(self, name, hunger, happiness):
         self.name = name
-        self.hunger = 50
-        self.happiness = 50
+        self.hunger = hunger
+        self.happiness = happiness
 
     def feed(self):
         self.set_hunger(self.hunger - 10)
@@ -22,28 +25,48 @@ class Pet:
             self.happiness -= 20
 
 class Dog(Pet):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, hunger, happiness):
+        super().__init__(name, hunger, happiness)
 
     def feed(self):
         super().feed()
-        print("Woof!")
+        print("Mjam Mjam!")
 
     def play(self):
         super().play()
         print("Woof! Woof!")
 
 def main():
-    name = input("What would you like to name your dog? ")
-    dog = Dog(name)
+    name_file = "dog_name.txt"
+    state_file = "dog_state.json"
+
+    if os.path.exists(name_file):
+        with open(name_file, "r") as file:
+            name = file.read().strip()
+    else:
+        name = input("Wie willst du deinen Hund nennen? ")
+        with open(name_file, "w") as file:
+            file.write(name)
+
+    if os.path.exists(state_file):
+        with open(state_file, "r") as file:
+            state = json.load(file)
+    else:
+        state = {"hunger": 50, "happiness": 50}
+
+    dog = Dog(name, state["hunger"], state["happiness"])  
+    
     while True:
-        print(f"\n{dog.name}'s Hunger: {dog.hunger}, Happiness: {dog.happiness}")
-        action = input("What would you like to do? (feed, play, quit): ")
-        if action == 'feed':
+        print(f"\n{dog.name}'s Hunger: {dog.hunger}, Fröhlichkeit: {dog.happiness}")
+        action = input("Was willst du tun? (füttern,spielen,beenden): ")
+        if action == 'füttern':
             dog.feed()
-        elif action == 'play':
+        elif action == 'spielen':
             dog.play()
-        elif action == 'quit':
+        elif action == 'beenden':
+            with open(state_file, "w") as file:
+                json.dump({"hunger": dog.hunger, "happiness": dog.happiness}, file)
+            print("Bis zum nächsten Mal!")
             break
         else:
             print("Invalid action.")
